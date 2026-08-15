@@ -1,92 +1,62 @@
-# 🛡️ oncyber
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11+-blue?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/FastAPI-0.109.0-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+</p>
 
-Универсальный набор инструментов для кибербезопасности с бэкендом на FastAPI.
-
----
-
-## 📌 Возможности
-
-- 🔐 **JWT-авторизация** — регистрация и вход с токенами
-- 📡 **Порт-сканер** — многопоточное сканирование TCP-портов
-- 🔍 **OSINT** — поиск информации по email/username (GitHub, HaveIBeenPwned)
-- 🐞 **CVE-сканер** — поиск уязвимостей через circl.lu
-- 🌐 **Субдомены** — поиск поддоменов через hackertarget
-- 🎮 **Steam-аналитика** — статистика профиля и достижения
-- 📊 **История задач** — все сканирования сохраняются в SQLite
-- 🌙 **Тёмная тема** — UI в стиле твоего Steam Analyzer
+<h1 align="center">🛡️ oncyber</h1>
+<p align="center"><b>Универсальный набор инструментов для кибербезопасности</b><br>FastAPI + JWT + Тёмная тема</p>
 
 ---
 
-## 🚀 Быстрый старт
+## 📌 О проекте
 
-### 1. Клонируй репозиторий
+**oncyber** — это единая платформа, которая объединяет твои любимые инструменты для пентеста и OSINT в одном месте. Всё работает через API и красивый веб-интерфейс с тёмной темой.
+
+**Зачем это нужно?**
+- Не нужно открывать 5 разных утилит — всё в одном окне
+- Авторизация через JWT — данные каждого пользователя изолированы
+- Все результаты сохраняются в базу данных
+- Можно запускать сканирование и получать результат через пару секунд
+- Готово для развёртывания на VPS или в Docker
+
+---
+
+## 🚀 Быстрый старт за 1 минуту
+
+### 1. Склонируй репозиторий
 
 ```bash
 git clone https://github.com/Oncillaa/oncyber.git
 cd oncyber
 ```
-
-###2. Создай виртуальное окружение
+2. Создай и активируй виртуальное окружение
 bash
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-
-###3. Установи зависимости
+source venv/bin/activate      # Linux/Mac
+venv\Scripts\activate         # Windows
+3. Установи зависимости
 bash
 pip install -r requirements.txt
-
-###4. Создай .env файл
-env
-SECRET_KEY=oncyber_secret_key_2026
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=60
-DATABASE_URL=sqlite:///./oncyber.db
-
-###5. Запусти сервер
+4. Создай файл .env
+bash
+echo SECRET_KEY=supersecretkey > .env
+echo ALGORITHM=HS256 >> .env
+echo ACCESS_TOKEN_EXPIRE_MINUTES=60 >> .env
+echo DATABASE_URL=sqlite:///./oncyber.db >> .env
+5. Запусти сервер
 bash
 uvicorn app.main:app --reload
+6. Открой в браузере
+Ссылка	Что это
+http://127.0.0.1:8000/static/index.html	🌐 Фронтенд — красивая панель управления
+http://127.0.0.1:8000/docs	📖 Swagger — документация API
 
-###6. Открой в браузере
-Фронтенд: http://127.0.0.1:8000/static/index.html
-
-Swagger: http://127.0.0.1:8000/docs
-
-📁 Структура проекта
-text
-oncyber/
-├── app/
-│   ├── api/            # Эндпоинты (auth, scan, osint, cve, subdomain, steam)
-│   ├── core/           # База данных, безопасность, зависимости
-│   ├── models/         # SQLAlchemy модели (User, ScanTask)
-│   ├── schemas/        # Pydantic схемы
-│   └── main.py         # Точка входа
-├── static/
-│   └── index.html      # Фронтенд с тёмной темой
-├── requirements.txt
-├── .env
-└── README.md
-🛠️ Технологии
-Python 3.11+
-
-FastAPI — бэкенд-фреймворк
-
-SQLAlchemy — ORM для SQLite
-
-JWT — авторизация (python-jose + passlib[bcrypt])
-
-Docker — контейнеризация (опционально)
-
-HTML + CSS + JS — фронтенд
-
-🔗 API Эндпоинты
-Метод	Эндпоинт	Описание
-POST	/api/v1/auth/register	Регистрация
-POST	/api/v1/auth/login	Вход (JWT)
-GET	/api/v1/users/me	Профиль
-POST	/api/v1/scan/ports	Сканирование портов
-POST	/api/v1/osint/search	OSINT
-POST	/api/v1/cve/search	CVE-сканер
-POST	/api/v1/subdomain/find	Поиск субдоменов
-POST	/api/v1/steam/stats	Steam-аналитика
-
+flowchart LR
+    A[Фронтенд<br>HTML+CSS+JS] -->|Запросы| B[FastAPI<br>Бэкенд]
+    B -->|JWT-проверка| C[Авторизация]
+    B -->|Запуск задач| D[Порт-сканер]
+    B -->|Запросы к API| E[OSINT / CVE / Subdomain / Steam]
+    B -->|Сохранение| F[(SQLite<br>База данных)]
