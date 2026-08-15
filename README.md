@@ -172,15 +172,6 @@ docker-compose up --build
 
 ---
 
-## 📝 Что дальше?
-
-- [ ] Добавить брутфорсер
-- [ ] Экспорт отчётов в PDF
-- [ ] Развернуть на VPS
-- [ ] Настроить HTTPS
-
----
-
 ## 📄 Лицензия
 
 MIT © 2026 [Oncillaa](https://github.com/Oncillaa)
