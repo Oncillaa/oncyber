@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ oncyber — Security Toolkit</title>
+    <style>
+        /* ─── ГЛОБАЛЬНЫЕ ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ─── ШАПКА ─── */
+        .header {
+            text-align: center;
+            padding: 30px 0 20px;
+            border-bottom: 1px solid #2a313a;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f8cc9, #7dd87d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #8896a4;
+            margin-top: 6px;
+            font-size: 1rem;
+        }
+        .header .badge-version {
+            display: inline-block;
+            background: #1a1f26;
+            color: #4f8cc9;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            border: 1px solid #2a313a;
+            margin-top: 8px;
+        }
+
+        /* ─── КАРТОЧКИ ─── */
+        .card {
+            background: #1a1f26;
+            border: 1px solid #2a313a;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: border-color 0.2s;
+        }
+        .card:hover {
+            border-color: #4f8cc9;
+        }
+        .card h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #f0f6fc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .card h2 .badge {
+            background: #2a313a;
+            color: #8896a4;
+            font-size: 0.65rem;
+            font-weight: 400;
+            padding: 2px 12px;
+            border-radius: 20px;
+            border: 1px solid #2a313a;
+        }
+        .card h2 .badge-green {
+            background: #238636;
+            color: #fff;
+        }
+
+        /* ─── ФОРМЫ ─── */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #8896a4;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            background: #0d1117;
+            border: 1px solid #2a313a;
+            border-radius: 10px;
+            color: #e6edf3;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #4f8cc9;
+            box-shadow: 0 0 0 3px rgba(79, 140, 201, 0.15);
+        }
+        .form-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .form-row .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* ─── КНОПКИ ─── */
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #4f8cc9;
+            color: #0d1117;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: #6ba2d9;
+            box-shadow: 0 4px 12px rgba(79, 140, 201, 0.3);
+        }
+
+        .btn-success {
+            background: #7dd87d;
+            color: #0d1117;
+        }
+        .btn-success:hover:not(:disabled) {
+            background: #9ae39a;
+            box-shadow: 0 4px 12px rgba(125, 216, 125, 0.3);
+        }
+
+        .btn-danger {
+            background: #f05050;
+            color: #fff;
+        }
+        .btn-danger:hover:not(:disabled) {
+            background: #f57070;
+            box-shadow: 0 4px 12px rgba(240, 80, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: #2a313a;
+            color: #e6edf3;
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background: #3a434d;
+        }
+
+        .btn-warning {
+            background: #d4a84b;
+            color: #0d1117;
+        }
+        .btn-warning:hover:not(:disabled) {
+            background: #e0b95a;
+            box-shadow: 0 4px 12px rgba(212, 168, 75, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #4f8cc9;
+            border: 1px solid #4f8cc9;
+        }
+        .btn-outline:hover:not(:disabled) {
+            background: #4f8cc9;
+            color: #0d1117;
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
+
+        /* ─── АВТОРИЗАЦИЯ ─── */
+        .auth-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 700px) {
+            .auth-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ─── ТАБЫ ─── */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .tabs .tab {
+            padding: 8px 20px;
+            background: #1a1f26;
+            border: 1px solid #2a313a;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #8896a4;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .tabs .tab:hover {
+            background: #2a313a;
+            color: #e6edf3;
+        }
+        .tabs .tab.active {
+            background: #4f8cc9;
+            color: #0d1117;
+            border-color: #4f8cc9;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ─── ТОКЕН ─── */
+        #tokenDisplay {
+            background: #0d1117;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+            border: 1px solid #2a313a;
+            color: #7dd87d;
+            margin: 8px 0;
+        }
+
+        /* ─── ЗАДАЧИ ─── */
+        .task-item {
+            background: #0d1117;
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid #2a313a;
+            transition: border-color 0.2s;
+        }
+        .task-item:hover {
+            border-left-color: #4f8cc9;
+        }
+        .task-item .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .task-item .task-id {
+            font-weight: 600;
+            color: #4f8cc9;
+        }
+        .task-item .task-target {
+            color: #e6edf3;
+            font-weight: 500;
+        }
+        .task-item .status {
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: #1a1f26;
+        }
+        .task-item .status.pending {
+            color: #d4a84b;
+        }
+        .task-item .status.running {
+            color: #4f8cc9;
+            animation: pulse 1s infinite;
+        }
+        .task-item .status.completed {
+            color: #7dd87d;
+        }
+        .task-item .status.error {
+            color: #f05050;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .task-item .task-result {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: #8896a4;
+            margin-top: 6px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background: #0d1117;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #1a1f26;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .task-item .task-meta {
+            font-size: 0.7rem;
+            color: #8896a4;
+            margin-top: 4px;
+        }
+
+        /* ─── ЛОГ ─── */
+        .log {
+            background: #0d1117;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1px solid #2a313a;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+        .log .log-info {
+            color: #4f8cc9;
+        }
+        .log .log-success {
+            color: #7dd87d;
+        }
+        .log .log-error {
+            color: #f05050;
+        }
+        .log .log-warning {
+            color: #d4a84b;
+        }
+
+        /* ─── РЕЗУЛЬТАТЫ ОСИНТ И ДР ─── */
+        .result-box {
+            background: #0d1117;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            border: 1px solid #2a313a;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 12px;
+            color: #e6edf3;
+        }
+        .result-box .key {
+            color: #4f8cc9;
+        }
+        .result-box .string {
+            color: #7dd87d;
+        }
+        .result-box .number {
+            color: #d4a84b;
+        }
+        .result-box .boolean {
+            color: #f05050;
+        }
+
+        /* ─── СПИННЕР ─── */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #2a313a;
+            border-top-color: #4f8cc9;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ─── ФУТЕР ─── */
+        .footer {
+            text-align: center;
+            padding: 24px 0 12px;
+            color: #8896a4;
+            font-size: 0.85rem;
+            border-top: 1px solid #2a313a;
+            margin-top: 20px;
+        }
+        .footer a {
+            color: #4f8cc9;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ─── СКРЫТИЕ ─── */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ─── АДАПТИВ ─── */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .card {
+                padding: 16px;
+            }
+            .tabs .tab {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+
+        <!-- ─── ШАПКА ─── -->
+        <header class="header">
+            <h1>🛡️ oncyber</h1>
+            <p>Универсальный набор инструментов для кибербезопасности</p>
+            <span class="badge-version">v2.0 — FastAPI + JWT</span>
+        </header>
+
+        <!-- ─── АВТОРИЗАЦИЯ ─── -->
+        <div id="authSection" class="auth-grid">
+            <!-- Регистрация -->
+            <div class="card">
+                <h2>📝 Регистрация</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="regUsername" placeholder="username">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="••••••••">
+                </div>
+                <button class="btn btn-primary" id="registerBtn">Зарегистрироваться</button>
+            </div>
+
+            <!-- Вход -->
+            <div class="card">
+                <h2>🔑 Вход</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <button class="btn btn-success" id="loginBtn">Войти</button>
+            </div>
+        </div>
+
+        <!-- ─── ОСНОВНАЯ ПАНЕЛЬ ─── -->
+        <div id="mainSection" class="hidden">
+
+            <!-- Токен -->
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <span><strong>🔑 Токен</strong> <span style="color:#8896a4;font-size:0.8rem;">(хранится в браузере)</span></span>
+                    <button class="btn btn-danger btn-sm" id="logoutBtn">🚪 Выйти</button>
+                </div>
+                <div id="tokenDisplay">Нет токена</div>
+            </div>
+
+            <!-- ─── ТАБЫ ─── -->
+            <div class="tabs">
+                <span class="tab active" data-tab="tab-scan">📡 Сканер</span>
+                <span class="tab" data-tab="tab-osint">🔍 OSINT</span>
+                <span class="tab" data-tab="tab-cve">🛡️ CVE</span>
+                <span class="tab" data-tab="tab-subdomain">🌐 Субдомены</span>
+                <span class="tab" data-tab="tab-steam">🎮 Steam</span>
+            </div>
+
+            <!-- ─── ВКЛАДКА: СКАНЕР ─── -->
+            <div id="tab-scan" class="tab-content active">
+                <div class="card">
+                    <h2>📡 Сканирование портов <span class="badge badge-green">POST /api/v1/scan/ports</span></h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Цель (IP или домен)</label>
+                            <input type="text" id="scanTarget" placeholder="127.0.0.1" value="127.0.0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Порты</label>
+                            <input type="text" id="scanPorts" placeholder="22,80,443 или 1-1024" value="22,80,443">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="scanBtn">🚀 Запустить сканирование</button>
+                </div>
+
+                <div class="card">
+                    <h2>📋 История сканирований <span class="badge">GET /api/v1/scan/</span></h2>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+                        <button class="btn btn-secondary btn-sm" id="refreshTasksBtn">🔄 Обновить</button>
+                    </div>
+                    <div id="tasksList">
+                        <p style="color:#8896a4;">Нет задач. Запусти сканирование.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── ВКЛАДКА: OSINT ─── -->
+            <div id="tab-osint" class="tab-content">
+                <div class="card">
+                    <h2>🔍 OSINT — поиск информации <span class="badge badge-green">POST /api/v1/osint/search</span></h2>
+                    <div class="form-group">
+                        <label>Email или username</label>
+                        <input type="text" id="osintQuery" placeholder="email@example.com или username">
+                    </div>
+                    <button class="btn btn-warning" id="osintBtn">🔍 Поискать</button>
+                    <div id="osintResult" class="result-box hidden">Результат появится здесь</div>
+                </div>
+            </div>
+
+            <!-- ─── ВКЛАДКА: CVE ─── -->
+            <div id="tab-cve" class="tab-content">
+                <div class="card">
+                    <h2>🛡️ Поиск CVE <span class="badge badge-green">POST /api/v1/cve/search</span></h2>
+                    <div class="form-group">
+                        <label>Название ПО (например, nginx)</label>
+                        <input type="text" id="cveQuery" placeholder="nginx, apache, openssl">
+                    </div>
+                    <button class="btn btn-warning" id="cveBtn">🛡️ Найти уязвимости</button>
+                    <div id="cveResult" class="result-box hidden">Результат появится здесь</div>
+                </div>
+            </div>
+
+            <!-- ─── ВКЛАДКА: СУБДОМЕНЫ ─── -->
+            <div id="tab-subdomain" class="tab-content">
+                <div class="card">
+                    <h2>🌐 Поиск субдоменов <span class="badge badge-green">POST /api/v1/subdomain/find</span></h2>
+                    <div class="form-group">
+                        <label>Домен</label>
+                        <input type="text" id="subdomainQuery" placeholder="example.com">
+                    </div>
+                    <button class="btn btn-warning" id="subdomainBtn">🌐 Найти субдомены</button>
+                    <div id="subdomainResult" class="result-box hidden">Результат появится здесь</div>
+                </div>
+            </div>
+
+            <!-- ─── ВКЛАДКА: STEAM ─── -->
+            <div id="tab-steam" class="tab-content">
+                <div class="card">
+                    <h2>🎮 Steam-аналитика <span class="badge badge-green">POST /api/v1/steam/stats</span></h2>
+                    <div class="form-group">
+                        <label>Steam ID</label>
+                        <input type="text" id="steamId" placeholder="76561199221845125">
+                    </div>
+                    <button class="btn btn-warning" id="steamBtn">🎮 Получить статистику</button>
+                    <div id="steamResult" class="result-box hidden">Результат появится здесь</div>
+                </div>
+            </div>
+
+            <!-- ─── ЛОГ ─── -->
+            <div class="card">
+                <h2>📜 Лог</h2>
+                <div id="logContainer" class="log">Готов к работе.</div>
+            </div>
+
+        </div>
+
+        <!-- ─── ФУТЕР ─── -->
+        <footer class="footer">
+            <a href="https://github.com/Oncillaa/oncyber" target="_blank">GitHub</a> &middot;
+            <a href="http://127.0.0.1:8000/docs" target="_blank">Swagger</a> &middot;
+            <span style="color:#2a313a;">|</span>
+            <span style="color:#8896a4;">oncyber v2.0</span>
+        </footer>
+
+    </div>
+
+    <!-- ─── JAVASCRIPT ─── -->
+    <script>
+        // ─── КОНФИГ ───
+        const API = 'http://127.0.0.1:8000/api/v1';
+        const STORAGE_KEY = 'oncyber_token';
+
+        // ─── DOM ───
+        const $ = id => document.getElementById(id);
+        const authSection = $('authSection');
+        const mainSection = $('mainSection');
+        const tokenDisplay = $('tokenDisplay');
+        const logContainer = $('logContainer');
+        const tasksList = $('tasksList');
+
+        // ─── ЛОГГЕР ───
+        function log(msg, type = 'info') {
+            const colors = {
+                info: 'log-info',
+                success: 'log-success',
+                error: 'log-error',
+                warning: 'log-warning'
+            };
+            const el = document.createElement('div');
+            el.className = colors[type] || 'log-info';
+            el.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logContainer.appendChild(el);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // ─── ТОКЕН ───
+        function getToken() {
+            return localStorage.getItem(STORAGE_KEY);
+        }
+
+        function setToken(t) {
+            localStorage.setItem(STORAGE_KEY, t);
+            tokenDisplay.textContent = t ? `Bearer ${t.substring(0, 30)}... (${t.length} символов)` : 'Нет токена';
+        }
+
+        function clearToken() {
+            localStorage.removeItem(STORAGE_KEY);
+            tokenDisplay.textContent = 'Нет токена';
+        }
+
+        function isLoggedIn() {
+            return !!getToken();
+        }
+
+        // ─── UI ───
+        function updateUI() {
+            if (isLoggedIn()) {
+                authSection.classList.add('hidden');
+                mainSection.classList.remove('hidden');
+                setToken(getToken());
+                log('Авторизован. Загружаем задачи...', 'success');
+                loadTasks();
+            } else {
+                authSection.classList.remove('hidden');
+                mainSection.classList.add('hidden');
+                clearToken();
+                tasksList.innerHTML = '<p style="color:#8896a4;">Войди для просмотра задач.</p>';
+                log('Не авторизован. Войди или зарегистрируйся.', 'warning');
+            }
+        }
+
+        // ─── API ───
+        async function apiReq(endpoint, opts = {}) {
+            const headers = { 'Content-Type': 'application/json' };
+            const token = getToken();
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const res = await fetch(`${API}${endpoint}`, { ...opts, headers });
+            const data = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(data?.detail || data?.message || `Ошибка ${res.status}`);
+            return data;
+        }
+
+        // ─── ТАБЫ ───
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ─── РЕГИСТРАЦИЯ ───
+        $('registerBtn').addEventListener('click', async () => {
+            const username = $('regUsername').value.trim();
+            const email = $('regEmail').value.trim();
+            const password = $('regPassword').value.trim();
+            if (!username || !email || !password) {
+                log('Заполни все поля регистрации.', 'error');
+                return;
+            }
+            $('registerBtn').disabled = true;
+            $('registerBtn').textContent = '⏳';
+            try {
+                const data = await apiReq('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, email, password })
+                });
+                log(`✅ Зарегистрирован: ${data.username} (ID: ${data.id})`, 'success');
+                $('regUsername').value = '';
+                $('regEmail').value = '';
+                $('regPassword').value = '';
+            } catch (e) {
+                log(`❌ Ошибка: ${e.message}`, 'error');
+            }
+            $('registerBtn').disabled = false;
+            $('registerBtn').textContent = 'Зарегистрироваться';
+        });
+
+        // ─── ЛОГИН ───
+        $('loginBtn').addEventListener('click', async () => {
+            const username = $('loginUsername').value.trim();
+            const password = $('loginPassword').value.trim();
+            if (!username || !password) {
+                log('Введи username и password.', 'error');
+                return;
+            }
+            $('loginBtn').disabled = true;
+            $('loginBtn').textContent = '⏳';
+            try {
+                const form = new URLSearchParams();
+                form.append('username', username);
+                form.append('password', password);
+                const res = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: form
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Ошибка входа');
+                setToken(data.access_token);
+                log('✅ Вход выполнен успешно!', 'success');
+                $('loginUsername').value = '';
+                $('loginPassword').value = '';
+                updateUI();
+            } catch (e) {
+                log(`❌ Ошибка: ${e.message}`, 'error');
+            }
+            $('loginBtn').disabled = false;
+            $('loginBtn').textContent = 'Войти';
+        });
+
+        // ─── ВЫХОД ───
+        $('logoutBtn').addEventListener('click', () => {
+            clearToken();
+            log('Выход выполнен.', 'warning');
+            updateUI();
+        });
+
+        // ─── СКАНИРОВАНИЕ ───
+        $('scanBtn').addEventListener('click', async () => {
+            const target = $('scanTarget').value.trim();
+            const ports = $('scanPorts').value.trim();
+            if (!target || !ports) {
+                log('Укажи цель и порты.', 'error');
+                return;
+            }
+            $('scanBtn').disabled = true;
+            $('scanBtn').textContent = '⏳';
+            try {
+                const data = await apiReq('/scan/ports', {
+                    method: 'POST',
+                    body: JSON.stringify({ target, ports })
+                });
+                log(`🚀 Сканирование #${data.id} запущено (${target}:${ports})`, 'success');
+                $('scanTarget').value = '';
+                $('scanPorts').value = '';
+                loadTasks();
+            } catch (e) {
+                log(`❌ Ошибка: ${e.message}`, 'error');
+            }
+            $('scanBtn').disabled = false;
+            $('scanBtn').textContent = '🚀 Запустить сканирование';
+        });
+
+        // ─── ЗАГРУЗКА ЗАДАЧ ───
+        async function loadTasks() {
+            if (!isLoggedIn()) return;
+            try {
+                const data = await apiReq('/scan/');
+                const tasks = data.tasks || [];
+                if (!tasks.length) {
+                    tasksList.innerHTML = '<p style="color:#8896a4;">Нет задач. Запусти сканирование.</p>';
+                    return;
+                }
+                tasksList.innerHTML = tasks.map(t => {
+                    let resultHtml = '';
+                    if (t.result) {
+                        try {
+                            const pretty = JSON.stringify(JSON.parse(t.result), null, 2);
+                            resultHtml = `<div class="task-result">${pretty}</div>`;
+                        } catch {
+                            resultHtml = `<div class="task-result">${t.result}</div>`;
+                        }
+                    }
+                    if (t.error) {
+                        resultHtml = `<div class="task-result" style="color:#f05050;">❌ ${t.error}</div>`;
+                    }
+                    return `
+                        <div class="task-item">
+                            <div class="task-header">
+                                <div>
+                                    <span class="task-id">#${t.id}</span>
+                                    <span class="task-target">${t.target}:${t.params || ''}</span>
+                                    <span class="status ${t.status}">${t.status}</span>
+                                </div>
+                                <span class="task-meta">${new Date(t.created_at).toLocaleString()} ${t.completed_at ? `→ ${new Date(t.completed_at).toLocaleString()}` : ''}</span>
+                            </div>
+                            ${resultHtml}
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                log(`❌ Ошибка загрузки задач: ${e.message}`, 'error');
+            }
+        }
+
+        $('refreshTasksBtn').addEventListener('click', () => {
+            loadTasks();
+            log('Список обновлён.', 'info');
+        });
+
+        // ─── OSINT ───
+        $('osintBtn').addEventListener('click', async () => {
+            const query = $('osintQuery').value.trim();
+            if (!query) {
+                log('Введи email или username.', 'error');
+                return;
+            }
+            const resultBox = $('osintResult');
+            resultBox.classList.remove('hidden');
+            resultBox.textContent = '⏳ Загрузка...';
+            $('osintBtn').disabled = true;
+            $('osintBtn').textContent = '⏳';
+            try {
+                const data = await apiReq('/osint/search', {
+                    method: 'POST',
+                    body: JSON.stringify({ query })
+                });
+                resultBox.textContent = JSON.stringify(data, null, 2);
+                log(`✅ OSINT по "${query}" выполнен.`, 'success');
+            } catch (e) {
+                resultBox.textContent = `❌ Ошибка: ${e.message}`;
+                log(`❌ OSINT ошибка: ${e.message}`, 'error');
+            }
+            $('osintBtn').disabled = false;
+            $('osintBtn').textContent = '🔍 Поискать';
+        });
+
+        // ─── CVE ───
+        $('cveBtn').addEventListener('click', async () => {
+            const query = $('cveQuery').value.trim();
+            if (!query) {
+                log('Введи название ПО.', 'error');
+                return;
+            }
+            const resultBox = $('cveResult');
+            resultBox.classList.remove('hidden');
+            resultBox.textContent = '⏳ Загрузка...';
+            $('cveBtn').disabled = true;
+            $('cveBtn').textContent = '⏳';
+            try {
+                const data = await apiReq('/cve/search', {
+                    method: 'POST',
+                    body: JSON.stringify({ product: query })
+                });
+                resultBox.textContent = JSON.stringify(data, null, 2);
+                log(`✅ CVE по "${query}" выполнен.`, 'success');
+            } catch (e) {
+                resultBox.textContent = `❌ Ошибка: ${e.message}`;
+                log(`❌ CVE ошибка: ${e.message}`, 'error');
+            }
+            $('cveBtn').disabled = false;
+            $('cveBtn').textContent = '🛡️ Найти уязвимости';
+        });
+
+        // ─── СУБДОМЕНЫ ───
+        $('subdomainBtn').addEventListener('click', async () => {
+            const domain = $('subdomainQuery').value.trim();
+            if (!domain) {
+                log('Введи домен.', 'error');
+                return;
+            }
+            const resultBox = $('subdomainResult');
+            resultBox.classList.remove('hidden');
+            resultBox.textContent = '⏳ Загрузка...';
+            $('subdomainBtn').disabled = true;
+            $('subdomainBtn').textContent = '⏳';
+            try {
+                const data = await apiReq('/subdomain/find', {
+                    method: 'POST',
+                    body: JSON.stringify({ domain })
+                });
+                resultBox.textContent = JSON.stringify(data, null, 2);
+                log(`✅ Субдомены для "${domain}" найдены.`, 'success');
+            } catch (e) {
+                resultBox.textContent = `❌ Ошибка: ${e.message}`;
+                log(`❌ Субдомены ошибка: ${e.message}`, 'error');
+            }
+            $('subdomainBtn').disabled = false;
+            $('subdomainBtn').textContent = '🌐 Найти субдомены';
+        });
+
+        // ─── STEAM ───
+        $('steamBtn').addEventListener('click', async () => {
+            const steamId = $('steamId').value.trim();
+            if (!steamId) {
+                log('Введи Steam ID.', 'error');
+                return;
+            }
+            const resultBox = $('steamResult');
+            resultBox.classList.remove('hidden');
+            resultBox.textContent = '⏳ Загрузка...';
+            $('steamBtn').disabled = true;
+            $('steamBtn').textContent = '⏳';
+            try {
+                const data = await apiReq('/steam/stats', {
+                    method: 'POST',
+                    body: JSON.stringify({ steam_id: steamId })
+                });
+                resultBox.textContent = JSON.stringify(data, null, 2);
+                log(`✅ Steam-статистика для "${steamId}" получена.`, 'success');
+            } catch (e) {
+                resultBox.textContent = `❌ Ошибка: ${e.message}`;
+                log(`❌ Steam ошибка: ${e.message}`, 'error');
+            }
+            $('steamBtn').disabled = false;
+            $('steamBtn').textContent = '🎮 Получить статистику';
+        });
+
+        // ─── АВТООБНОВЛЕНИЕ ───
+        setInterval(() => {
+            if (isLoggedIn()) loadTasks();
+        }, 15000);
+
+        // ─── СТАРТ ───
+        updateUI();
+        log('🛡️ oncyber v2.0 загружен.', 'info');
+        log(`🔗 API: ${API}`, 'info');
+    </script>
+
+</body>
+</html>
